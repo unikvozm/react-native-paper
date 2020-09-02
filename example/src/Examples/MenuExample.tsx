@@ -4,6 +4,8 @@ import {
   StyleSheet,
   Platform,
   GestureResponderEvent,
+  Text,
+  ScrollView,
 } from 'react-native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import {
@@ -80,13 +82,44 @@ const MenuExample = ({ navigation }: Props) => {
           <Menu.Item onPress={() => {}} title="Paste" />
         </Menu>
       </Appbar.Header>
-      <View style={[styles.container, { backgroundColor: background }]}>
+      <ScrollView style={[styles.container, { backgroundColor: background }]}>
         <View style={styles.alignCenter}>
           <Menu
             visible={_getVisible('menu2')}
             onDismiss={_toggleMenu('menu2')}
             anchor={
               <Button mode="outlined" onPress={_toggleMenu('menu2')}>
+                Menu with icons
+              </Button>
+            }
+          >
+            <Menu.Item icon="undo" onPress={() => {}} title="Undo" />
+            <Menu.Item icon="redo" onPress={() => {}} title="Redo" />
+            <Divider />
+            <Menu.Item
+              icon="content-cut"
+              onPress={() => {}}
+              title="Cut"
+              disabled
+            />
+            <Menu.Item
+              icon="content-copy"
+              onPress={() => {}}
+              title="Copy"
+              disabled
+            />
+            <Menu.Item icon="content-paste" onPress={() => {}} title="Paste" />
+          </Menu>
+          <View style={styles.contentContainer}>
+            <Text style={styles.paragraph}>
+              Some content that fill the height of the screen
+            </Text>
+          </View>
+          <Menu
+            visible={_getVisible('menu4')}
+            onDismiss={_toggleMenu('menu4')}
+            anchor={
+              <Button mode="outlined" onPress={_toggleMenu('menu4')}>
                 Menu with icons
               </Button>
             }
@@ -127,7 +160,7 @@ const MenuExample = ({ navigation }: Props) => {
             />
           </TouchableRipple>
         </List.Section>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -147,6 +180,15 @@ const styles = StyleSheet.create({
   },
   alignCenter: {
     alignItems: 'center',
+  },
+  contentContainer: {
+    height: 700,
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
