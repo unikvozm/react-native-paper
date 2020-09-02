@@ -459,59 +459,21 @@ class Menu extends React.Component<Props, State> {
         : scrollableMenuHeight;
 
     // Menu is typically positioned below the element that generates it
-    // So first check if it fits below the anchor (expands downwards)
-    if (
-      // Check if menu fits vertically
-      top <=
-        windowLayout.height -
-          menuLayout.height -
-          SCREEN_INDENT -
-          additionalVerticalValue ||
-      // Or if the menu overflows from bottom side
-      (top >=
-        windowLayout.height -
-          menuLayout.height -
-          SCREEN_INDENT -
-          additionalVerticalValue &&
-        // And bottom side of the screen has more space than top side
-        top <= windowLayout.height - top)
-    ) {
+    // Check if there's not enough space on the bottom
+    if (top > windowLayout.height - menuLayout.height - SCREEN_INDENT) {
       positionTransforms.push({
-        translateY: scaleAnimation.y.interpolate({
-          inputRange: [0, menuLayout.height],
-          outputRange: [-((scrollableMenuHeight || menuLayout.height) / 2), 0],
-        }),
+        translateY: Animated.multiply(scaleAnimation.y, -1),
       });
-
-      // Check if menu position has enough space from top side
-      if (top < SCREEN_INDENT) {
-        top = SCREEN_INDENT;
-      }
+      top = Math.max(
+        windowLayout.height - SCREEN_INDENT + anchorLayout.height / 2,
+        top + anchorLayout.height
+      );
+    }
+    // Check if menu position has enough space from top side
+    else if (top < SCREEN_INDENT) {
+      top = SCREEN_INDENT + anchorLayout.height;
     } else {
-      positionTransforms.push({
-        translateY: scaleAnimation.y.interpolate({
-          inputRange: [0, menuLayout.height],
-          outputRange: [(scrollableMenuHeight || menuLayout.height) / 2, 0],
-        }),
-      });
-
-      top += anchorLayout.height - (scrollableMenuHeight || menuLayout.height);
-
-      const bottom =
-        top +
-        (scrollableMenuHeight || menuLayout.height) +
-        additionalVerticalValue;
-
-      // Check if menu position has enough space from bottom side
-      if (bottom > windowLayout.height - SCREEN_INDENT) {
-        top =
-          scrollableMenuHeight === windowLayout.height - 2 * SCREEN_INDENT
-            ? -SCREEN_INDENT * 2
-            : windowLayout.height -
-              menuLayout.height -
-              SCREEN_INDENT -
-              additionalVerticalValue;
-      }
+      top += anchorLayout.height;
     }
 
     const shadowMenuContainerStyle = {
